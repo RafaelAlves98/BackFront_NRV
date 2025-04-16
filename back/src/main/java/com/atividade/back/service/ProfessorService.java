@@ -1,4 +1,4 @@
-package Service;
+package com.atividade.back.service;
 
 import com.atividade.back.entity.Professor;
 import com.atividade.back.repository.ProfessorRepository;

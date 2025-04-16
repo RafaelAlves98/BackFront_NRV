@@ -1,6 +1,6 @@
 package com.atividade.back.controller;
 
-import Service.TurmaService;
+import com.atividade.back.service.TurmaService;
 import com.atividade.back.entity.Turma;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

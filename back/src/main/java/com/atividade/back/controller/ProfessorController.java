@@ -1,6 +1,6 @@
 package com.atividade.back.controller;
 
-import Service.ProfessorService;
+import com.atividade.back.service.ProfessorService;
 import com.atividade.back.entity.Professor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
