@@ -1,10 +1,7 @@
 package com.atividade.back.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -15,7 +12,12 @@ public class Atividade {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
-    private String nomeMateria;
-    private Integer nota;
 
+    private String nome;
+
+    private String descricao;
+
+    @ManyToOne
+    @JoinColumn(name = "turma_id")
+    private Turma turma;
 }
