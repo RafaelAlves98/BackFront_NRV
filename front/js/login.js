@@ -1,26 +1,19 @@
-function login () {
-    const email = document.getElementById('loginemail').value;
-    const senha = document.getElementById('loginsenha').value;
+document.getElementById('loginForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const email = document.getElementById('emailLogin').value;
+    const senha = document.getElementById('passwordLogin').value;
 
-    fetch('http://localhost:8080/professor/login', {
-        method: 'POST',
-        headers: { 
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email,senha })
-    })
-    
-    .then(response => response.json())
-    .then(data => {
+    try {
+        const data = await loginProfessor(email, senha);
         if (data.success) {
-            alert(data.message);  
-            window.location.href = 'dashboard.html';
+            localStorage.setItem('professorNome', data.nome);
+            alert(data.message);
+            window.location.href = 'html/principal.html';
         } else {
-            alert(data.message);  
+            alert(data.message);
         }
-    })
-    .catch(error => {
+    } catch (error) {
         alert("Erro ao fazer login");
-        console.log(error);
-    });
-}
+        console.error(error);
+    }
+});

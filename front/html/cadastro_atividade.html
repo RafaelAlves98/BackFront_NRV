@@ -5,19 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro Atividades</title>
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="/css/container.css">
-    <link rel="stylesheet" href="/css/turma.css">
+    <link rel="stylesheet" href="../css/container.css">
+    <link rel="stylesheet" href="../css/turma.css">
 </head>
 <body>
     <section class="displayLogin">
         <h2>Cadastro de Atividade</h2>
-        <form class="styleForms">
+        <form class="styleForms" id="atividadeForm">
             <div class="inputDivLogin">
-                <label for="emailLogin">Nome da Atividade: </label><br>
-                <input type="text" name="emailLogin" id="emailLogin">
+                <label for="nomeAtividade">Nome da Atividade: </label><br>
+                <input type="text" name="nomeAtividade" id="nomeAtividade">
             </div>
-            <a href="atividades.html"><input id="loginButton" type="button" value="Cadastrar"></a> 
+            <div class="inputDivLogin">
+                <label for="descricaoAtividade">Descrição: </label><br>
+                <textarea name="descricaoAtividade" id="descricaoAtividade"></textarea>
+            </div>
+            <div class="inputDivLogin">
+                <label for="turmaId">Turma: </label><br>
+                <select name="turmaId" id="turmaId">
+                    <option value="">Selecione uma turma</option>
+                </select>
+            </div>
+            <input id="loginButton" type="submit" value="Cadastrar">
         </form>
     </section>
+    <script src="../js/api.js"></script>
+    <script>
+        async function loadTurmas() {
+            const select = document.getElementById('turmaId');
+            try {
+                const turmas = await listarTurmas();
+                turmas.forEach(turma => {
+                    const option = document.createElement('option');
+                    option.value = turma.id;
+                    option.textContent = turma.nome;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar turmas:', error);
+            }
+        }
+
+        document.getElementById('atividadeForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const nome = document.getElementById('nomeAtividade').value;
+            const descricao = document.getElementById('descricaoAtividade').value;
+            const turmaId = document.getElementById('turmaId').value;
+            if (!turmaId) {
+                alert("Selecione uma turma");
+                return;
+            }
+            try {
+                const result = await criarAtividade(nome, descricao, turmaId);
+                alert(result);
+                window.location.href = 'atividades.html';
+            } catch (error) {
+                alert("Erro ao cadastrar atividade");
+                console.error(error);
+            }
+        });
+
+        window.onload = loadTurmas;
+    </script>
 </body>
 </html>

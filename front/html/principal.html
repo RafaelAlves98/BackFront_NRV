@@ -10,27 +10,68 @@
 <body>
     <section class="displayHome">
         <div class="gridDisplay">
-            <h1>Olá, Professora Vicolel!</h1>
+            <h1 id="professorGreeting">Olá!</h1>
             <a href="../login.html"><input id="logOut" type="button" value="sair"></a>
         </div>
         <a href="cadastro_turma.html"><input id="buttonClass" type="button" value="Cadastrar Turma"></a>
         <table class="layoutTable">
-            <tr>
-                <th>Nº Turma</th>
-                <th>Nome da Turma</th>
-                <th></th>
-            </tr>
-            <tr>
-                <td>001</td>
-                <td>Turma A</td>
-                <td><input class="delete" type="button" value="Excluir"> <a href="atividades.html"><input class="view" type="button" value="Visualizar"></a></td>
-            </tr>
-            <tr>
-                <td>002</td>
-                <td>Turma B</td>
-                <td><input class="delete" type="button" value="Excluir"> <a href="atividades.html"><input class="view" type="button" value="Visualizar"></a></td>
-            </tr>
+            <thead>
+                <tr>
+                    <th>Nº Turma</th>
+                    <th>Nome da Turma</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="turmasTableBody"></tbody>
         </table>
     </section>
+    <script src="../js/api.js"></script>
+    <script>
+        async function loadTurmas() {
+            const tbody = document.getElementById('turmasTableBody');
+            try {
+                const turmas = await listarTurmas();
+                tbody.innerHTML = '';
+                turmas.forEach(turma => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${turma.id}</td>
+                        <td>${turma.nome}</td>
+                        <td>
+                            <input class="delete" type="button" value="Excluir" onclick="deletarTurma(${turma.id})">
+                            <a href="atividades.html?turmaId=${turma.id}"><input class="view" type="button" value="Visualizar"></a>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                alert("Erro ao carregar turmas");
+                console.error(error);
+            }
+        }
+
+        async function deletarTurma(id) {
+            if (confirm("Deseja excluir esta turma?")) {
+                try {
+                    const result = await deletarTurma(id);
+                    alert(result);
+                    loadTurmas();
+                } catch (error) {
+                    alert("Erro ao deletar turma");
+                    console.error(error);
+                }
+                }
+        }
+
+        function updateGreeting() {
+            const nome = localStorage.getItem('professorNome') || 'Professor';
+            document.getElementById('professorGreeting').textContent = `Olá, ${nome}!`;
+        }
+
+        window.onload = () => {
+            updateGreeting();
+            loadTurmas();
+        };
+    </script>
 </body>
 </html>
