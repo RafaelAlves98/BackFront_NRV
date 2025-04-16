@@ -10,27 +10,80 @@
 <body>
     <section class="displayHome">
         <div class="gridDisplay">
-            <h1>Olá, Professora Vicolel!</h1>
+            <h1 id="professorGreeting">Olá!</h1>
             <a href="../login.html"><input id="logOut" type="button" value="sair"></a>
         </div>
         <a href="cadastro_atividade.html"><input id="buttonClass" type="button" value="Cadastrar Atividade"></a>
         <table class="layoutTable">
-            <tr>
-                <th>Nº Atividade</th>
-                <th>Descrição</th>
-                <th></th>
-            </tr>
-            <tr>
-                <td>001</td>
-                <td>Banco de Dados</td>
-                <td><input class="delete" type="button" value="Excluir"> <a href="principal.html"><input class="view" type="button" value="Visualizar"></a></td>
-            </tr>
-            <tr>
-                <td>002</td>
-                <td>Front-End</td>
-                <td><input class="delete" type="button" value="Excluir"> <a href="principal.html"><input class="view" type="button" value="Visualizar"></a></td>
-            </tr>
+            <thead>
+                <tr>
+                    <th>Nº Atividade</th>
+                    <th>Descrição</th>
+                    <th>Turma</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="atividadesTableBody"></tbody>
         </table>
     </section>
+    <script src="../js/api.js"></script>
+    <script>
+        async function loadAtividades() {
+            const tbody = document.getElementById('atividadesTableBody');
+            const urlParams = new URLSearchParams(window.location.search);
+            const turmaId = urlParams.get('turmaId');
+            try {
+                const atividades = await listarAtividades();
+                tbody.innerHTML = '';
+                const filteredAtividades = turmaId 
+                    ? atividades.filter(atividade => atividade.turma.id == turmaId)
+                    : atividades;
+                filteredAtividades.forEach(atividade => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${atividade.id}</td>
+                        <td>${atividade.descricao || 'Sem descrição'}</td>
+                        <td>${atividade.turma.nome}</td>
+                        <td>
+                            <input class="delete" type="button" value="Excluir" onclick="deletarAtividade(${atividade.id})">
+                            <input class="view" type="button" value="Visualizar" onclick="visualizarAtividade(${atividade.id})">
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                alert("Erro ao carregar atividades");
+                console.error(error);
+            }
+        }
+
+        async function deletarAtividade(id) {
+            if (confirm("Deseja excluir esta atividade?")) {
+                try {
+                    const result = await deletarAtividade(id);
+                    alert(result);
+                    loadAtividades();
+                } catch (error) {
+                    alert("Erro ao deletar atividade");
+                    console.error(error);
+                }
+            }
+        }
+
+        function visualizarAtividade(id) {
+            alert(`Visualizando atividade ID: ${id}`);
+            // Implementar visualização detalhada, se necessário
+        }
+
+        function updateGreeting() {
+            const nome = localStorage.getItem('professorNome') || 'Professor';
+            document.getElementById('professorGreeting').textContent = `Olá, ${nome}!`;
+        }
+
+        window.onload = () => {
+            updateGreeting();
+            loadAtividades();
+        };
+    </script>
 </body>
 </html>
