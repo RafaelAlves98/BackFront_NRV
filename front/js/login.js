@@ -6,7 +6,7 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
     try {
         const data = await loginProfessor(email, senha);
         if (data.success) {
-            localStorage.setItem('professorNome', data.nome);
+            localStorage.setItem('professor', data.nome);
             alert(data.message);
             window.location.href = 'html/principal.html';
         } else {
